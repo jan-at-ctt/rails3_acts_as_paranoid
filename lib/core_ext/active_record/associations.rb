@@ -37,8 +37,6 @@ module ActiveRecord
     class BelongsToPolymorphicAssociation
       private
       def find_target
-        puts @reflection.options[:foreign_type].inspect
-        puts @owner[@reflection.options[:foreign_type]]
         return nil if association_class.nil?
 
         target =
