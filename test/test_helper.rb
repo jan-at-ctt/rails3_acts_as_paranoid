@@ -77,51 +77,57 @@ def setup_db
     create_table :paranoid_with_callbacks do |t|
       t.string    :name
       t.datetime  :deleted_at
-      
+
       t.timestamps
     end
 
     create_table :paranoid_destroy_companies do |t|
       t.string :name
       t.datetime :deleted_at
-      
+
       t.timestamps
     end
-    
+
     create_table :paranoid_delete_companies do |t|
       t.string :name
       t.datetime :deleted_at
-      
+
       t.timestamps
     end
-    
+
     create_table :paranoid_products do |t|
       t.integer :paranoid_destroy_company_id
       t.integer :paranoid_delete_company_id
       t.string :name
       t.datetime :deleted_at
-      
+
       t.timestamps
     end
-    
+
     create_table :super_paranoids do |t|
       t.string :type
       t.references :has_many_inherited_super_paranoidz
       t.datetime :deleted_at
-      
+
       t.timestamps
     end
 
     create_table :referrentially_integral_associates do |t|
       t.integer :super_paranoid_id
-      
+
       t.timestamps
     end
-    
+
+    create_table :referrentially_integral_polymorphic_associates do |t|
+      t.integer :super_paranoid_id
+
+      t.timestamps
+    end
+
     create_table :has_many_inherited_super_paranoidzs do |t|
       t.references :super_paranoidz
       t.datetime :deleted_at
-      
+
       t.timestamps
     end
   end
@@ -186,31 +192,31 @@ end
 
 class ParanoidWithCallback < ActiveRecord::Base
   acts_as_paranoid
-  
+
   attr_accessor :called_before_destroy, :called_after_destroy, :called_after_commit_on_destroy
   attr_accessor :called_before_recover, :called_after_recover
-  
+
   before_destroy :call_me_before_destroy
   after_destroy :call_me_after_destroy
-  
+
   after_commit :call_me_after_commit_on_destroy, :on => :destroy
 
   before_recover :call_me_before_recover
   after_recover :call_me_after_recover
-  
+
   def initialize(*attrs)
     @called_before_destroy = @called_after_destroy = @called_after_commit_on_destroy = false
     super(*attrs)
   end
-  
+
   def call_me_before_destroy
     @called_before_destroy = true
   end
-  
+
   def call_me_after_destroy
     @called_after_destroy = true
   end
-  
+
   def call_me_after_commit_on_destroy
     @called_after_commit_on_destroy = true
   end
@@ -250,6 +256,10 @@ end
 
 class ReferrentiallyIntegralAssociate < ActiveRecord::Base
   belongs_to :super_paranoid, :with_deleted => true
+end
+
+class ReferrentiallyIntegralPolymorphicAssociate < ActiveRecord::Base
+  belongs_to :super_paranoid, :polymorphic => true, :with_deleted => true
 end
 
 class HasManyInheritedSuperParanoidz < ActiveRecord::Base
