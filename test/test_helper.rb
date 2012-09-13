@@ -120,6 +120,7 @@ def setup_db
 
     create_table :referrentially_integral_polymorphic_associates do |t|
       t.integer :super_paranoid_id
+      t.string :super_paranoid_type
 
       t.timestamps
     end
