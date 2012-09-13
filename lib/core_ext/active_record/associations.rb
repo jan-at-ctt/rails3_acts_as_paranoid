@@ -48,7 +48,6 @@ module ActiveRecord
               :include    => @reflection.options[:include]
             )
           else
-            puts "#{@reflection.options[:with_deleted]}"
             target_class = @reflection.options[:with_deleted] ? \
               association_class.send(:unscoped) : association_class
 
